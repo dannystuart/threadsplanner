@@ -29,12 +29,12 @@ const typeStyles: Record<ContentType, { bg: string; label: string }> = {
     },
 };
 
-// Tag colors by content type - TEXT uses accent yellow, others use type-appropriate colors
+// Tag colors by content type - using Figma design colors
 const tagStyles: Record<ContentType, string> = {
-    [ContentType.TEXT]: 'bg-[var(--accent-yellow)] text-[var(--accent-yellow-foreground)]',
-    [ContentType.CREATIVE]: 'bg-[var(--secondary)] text-[var(--foreground)]',
-    [ContentType.RECYCLED]: 'bg-[var(--border)] text-[var(--foreground)]',
-    [ContentType.FLEXIBLE]: 'bg-[var(--muted)] text-[var(--foreground)]',
+    [ContentType.TEXT]: 'bg-[var(--content-text-tag-bg)] text-[var(--content-text-tag-fg)]',
+    [ContentType.CREATIVE]: 'bg-[var(--content-creative-tag-bg)] text-[var(--content-creative-tag-fg)]',
+    [ContentType.RECYCLED]: 'bg-[var(--content-recycled-tag-bg)] text-[var(--content-recycled-tag-fg)]',
+    [ContentType.FLEXIBLE]: 'bg-[var(--content-flexible-tag-bg)] text-[var(--content-flexible-tag-fg)]',
 };
 
 /* ==========================================================================

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Plus } from 'lucide-react';
 import { PlannerGrid } from '@/components/PlannerGrid';
 import { EditBlockModal } from '@/components/EditBlockModal';
@@ -22,9 +22,14 @@ export default function PlannerPage() {
     const [newBlockDate, setNewBlockDate] = useState<string | undefined>();
     const [newBlockTimeSlot, setNewBlockTimeSlot] = useState<TimeSlot>(0);
 
-    // Seed with sample data if empty
+    // Track if we've already seeded (prevent re-seeding after clear)
+    const hasSeeded = useRef(false);
+
+    // Seed with sample data if empty (only on first mount)
     useEffect(() => {
-        if (blocks.length === 0) {
+        if (blocks.length === 0 && !hasSeeded.current) {
+            hasSeeded.current = true;
+
             const todayDate = new Date();
             const todayStr = todayDate.toISOString().split('T')[0];
 
@@ -38,58 +43,28 @@ export default function PlannerPage() {
 
             addBlock({
                 type: ContentType.TEXT,
-                title: 'Morning Motivation',
+                title: 'fdfd',
                 text: 'Morning motivation post about pursuing your creative dreams.',
-                tags: ['Encourage Dreams'],
+                tags: ['Share Opinion', 'Spark Discussion'],
                 isPromotional: false,
                 isDone: false,
                 date: todayStr,
                 timeSlot: 0 as TimeSlot,
-            });
-
-            addBlock({
-                type: ContentType.CREATIVE,
-                title: 'Design Process Reveal',
-                text: 'Behind the scenes of my latest design project.',
-                tags: ['Behind the Scenes', 'Process'],
-                isPromotional: false,
-                isDone: false,
-                date: todayStr,
-                timeSlot: 2 as TimeSlot,
-            });
-
-            addBlock({
-                type: ContentType.RECYCLED,
-                title: 'Best of Last Month',
-                text: 'Throwback to one of my most popular posts.',
-                tags: ['Evergreen'],
-                isPromotional: false,
-                isDone: true,
-                date: tomorrowStr,
-                timeSlot: 1 as TimeSlot,
             });
 
             addBlock({
                 type: ContentType.FLEXIBLE,
-                title: 'Design Trends Hot Take',
-                text: 'Quick take on the latest design trends.',
-                tags: ['Trending Topic'],
+                title: 'sas',
+                text: 'Behind the scenes of my latest design project.',
+                tags: [],
                 isPromotional: false,
-                isDone: false,
-                date: dayAfterStr,
-                timeSlot: 0 as TimeSlot,
-            });
-
-            addBlock({
-                type: ContentType.TEXT,
-                title: 'Course Launch Announcement',
-                text: 'New course announcement! Early bird pricing available.',
-                tags: ['Share Insight'],
-                isPromotional: true,
-                isDone: false,
-                date: dayAfterStr,
+                isDone: true,
+                date: todayStr,
                 timeSlot: 2 as TimeSlot,
             });
+        } else if (blocks.length > 0) {
+            // If we already have blocks (from localStorage), mark as seeded
+            hasSeeded.current = true;
         }
     }, [blocks.length, addBlock]);
 
@@ -135,35 +110,43 @@ export default function PlannerPage() {
 
     return (
         <div className="min-h-screen bg-background">
-            {/* Fixed Header */}
-            <header className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur-sm">
-                <div className="mx-auto max-w-7xl px-4 py-3 sm:px-6 lg:px-8">
-                    <div className="flex items-center justify-between">
-                        {/* Left: Title and Stats */}
-                        <div>
-                            <h1 className="text-2xl font-bold text-foreground">Twine Planner</h1>
-                            <p className="text-sm text-muted-foreground">
-                                {blocks.length} blocks · {doneCount} completed
-                            </p>
+            {/* Fixed Header - Figma Design */}
+            <header className="sticky top-0 z-50 border-b border-[#E5E7EB] bg-[#F9F9F9]/95 backdrop-blur-sm">
+                <div className="mx-auto max-w-7xl px-8 py-5">
+                    {/* Top Row: Logo and Actions */}
+                    <div className="flex items-start justify-between">
+                        {/* Left: Logo and Stats */}
+                        <div className="flex flex-col gap-4 items-start">
+                            {/* Logo */}
+                            <img
+                                src="/Logo.png"
+                                alt="twine"
+                                className="h-7 w-auto object-contain"
+                            />
+                            {/* Stats */}
+                            <div className="flex flex-col text-[13px] text-[#6E8778]">
+                                <span>{doneCount} posts completed</span>
+                                <span>{blocks.length - doneCount} posts planned in next 4 weeks</span>
+                            </div>
                         </div>
 
                         {/* Center: Tag Managers */}
-                        <div className="hidden sm:flex items-center gap-1 border-l border-r border-border px-4">
+                        <div className="hidden sm:flex items-center gap-4 self-end pb-1">
                             <TagManagerDropdown type="text" label="Text Tags" />
                             <TagManagerDropdown type="creative" label="Creative Tags" />
                         </div>
 
                         {/* Right: Actions */}
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-2 self-end pb-1">
                             <button
                                 onClick={handleClearAll}
-                                className="rounded-lg border border-border px-3 py-1.5 text-sm font-medium text-muted-foreground hover:bg-muted transition-colors"
+                                className="rounded-lg border border-[#E5E7EB] bg-white px-4 py-2 text-[13px] font-normal text-[#3E4040] hover:bg-gray-50 transition-colors"
                             >
                                 Clear
                             </button>
                             <button
                                 onClick={handleNewBlock}
-                                className="inline-flex items-center gap-1.5 rounded-lg bg-secondary px-3 py-1.5 text-sm font-medium text-foreground hover:opacity-90 transition-opacity"
+                                className="inline-flex items-center gap-1.5 rounded-lg bg-[#6E8778] px-4 py-2 text-[13px] font-normal text-white hover:opacity-90 transition-opacity"
                             >
                                 <Plus className="h-4 w-4" />
                                 New Block

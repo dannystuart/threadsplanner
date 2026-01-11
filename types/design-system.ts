@@ -41,7 +41,7 @@ export interface DesignSystemColors {
 }
 
 /**
- * Default design system colors - matches current globals.css
+ * Default design system colors - matches current globals.css (Figma Design)
  */
 export const defaultDesignSystemColors: DesignSystemColors = {
     // Base
@@ -52,9 +52,9 @@ export const defaultDesignSystemColors: DesignSystemColors = {
     primary: '#FCFB63',
     primaryForeground: '#3E4040',
 
-    // Secondary
+    // Secondary (Sage Green)
     secondary: '#DCECDA',
-    secondaryForeground: '#1A1A1A',
+    secondaryForeground: '#3E4040',
 
     // Muted
     muted: '#E2E4D8',
@@ -64,19 +64,19 @@ export const defaultDesignSystemColors: DesignSystemColors = {
     border: '#E5E7EB',
     ring: '#FCFB63',
 
-    // Content Types
+    // Content Types (Figma Design)
     contentText: '#F0EFEB',
-    contentTextForeground: '#1A1A1A',
+    contentTextForeground: '#3E4040',
     contentCreative: '#DCECDA',
-    contentCreativeForeground: '#1A1A1A',
-    contentRecycled: '#F5F5F5',
-    contentRecycledForeground: '#1A1A1A',
-    contentFlexible: '#CBD5E1',
-    contentFlexibleForeground: '#1A1A1A',
+    contentCreativeForeground: '#3E4040',
+    contentRecycled: '#F0EFEB',
+    contentRecycledForeground: '#3E4040',
+    contentFlexible: '#F0EFEB',
+    contentFlexibleForeground: '#3E4040',
 
     // Accent Yellow
     accentYellow: '#FCFB63',
-    accentYellowForeground: '#1A1A1A',
+    accentYellowForeground: '#3E4040',
 };
 
 /**

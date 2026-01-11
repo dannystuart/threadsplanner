@@ -182,17 +182,24 @@ export function PlannerGrid({
             onDragEnd={handleDragEnd}
         >
             <div className="space-y-8">
-                {/* Header Row - Time Slot Labels */}
-                <div className="sticky top-[72px] z-10 grid grid-cols-[80px_1fr_1fr_1fr] gap-2 bg-background/95 backdrop-blur-sm py-3 border-b border-border">
+                {/* Header Row - Time Slot Labels with Icons (Figma Design) */}
+                <div className="sticky top-[108px] z-10 grid grid-cols-[80px_1fr_1fr_1fr] gap-2 bg-[#F9F9F9]/95 backdrop-blur-sm py-3 border-b border-[#E5E7EB]">
                     <div /> {/* Empty cell for date column */}
-                    {timeSlots.map((slot) => (
-                        <div
-                            key={slot}
-                            className="text-center text-sm font-medium text-muted-foreground"
-                        >
-                            {TIME_SLOT_LABELS[slot]}
-                        </div>
-                    ))}
+                    {/* Morning */}
+                    <div className="flex items-center justify-center gap-1">
+                        <img src="/icons/sunrise.svg" alt="" className="h-5 w-5" />
+                        <span className="text-[13px] font-normal text-[#6E8778]">Morning</span>
+                    </div>
+                    {/* Afternoon */}
+                    <div className="flex items-center justify-center gap-1">
+                        <img src="/icons/sun.svg" alt="" className="h-5 w-5" />
+                        <span className="text-[13px] font-normal text-[#6E8778]">Afternoon</span>
+                    </div>
+                    {/* Evening */}
+                    <div className="flex items-center justify-center gap-1">
+                        <img src="/icons/moon.svg" alt="" className="h-5 w-5" />
+                        <span className="text-[13px] font-normal text-[#6E8778]">Evening</span>
+                    </div>
                 </div>
 
                 {/* Weeks */}

@@ -34,28 +34,39 @@
    --radius: 1rem;
 
    /* ==========================================================================
-     Content Type Colors
+     Content Type Colors (Figma Design)
      ========================================================================== */
 
-   /* Text blocks */
+   /* Text blocks - Cream/Cararra bg, Olive/Khaki tags */
    --content-text: #F0EFEB;
-   --content-text-foreground: #1A1A1A;
+   --content-text-foreground: #3E4040;
+   --content-text-tag-bg: #CECABB;
+   --content-text-tag-fg: #514D3E;
 
-   /* Creative blocks */
-   --content-creative: #DCECDA;
-   --content-creative-foreground: #1A1A1A;
+   /* Creative blocks - Light Sage Green bg, Medium Sage tags */
+   --content-creative: #E4EAE3;
+   --content-creative-foreground: #3E4040;
+   --content-creative-tag-bg: #BCD1B9;
+   --content-creative-tag-fg: #404E3E;
 
-   /* Recycled blocks */
-   --content-recycled: #F5F5F5;
-   --content-recycled-foreground: #1A1A1A;
+   /* Recycled blocks - Light Gray bg, Gray tags */
+   --content-recycled: #EBEBEB;
+   --content-recycled-foreground: #3E4040;
+   --content-recycled-tag-bg: #CFCFCF;
+   --content-recycled-tag-fg: #5C5C5C;
 
-   /* Flexible blocks */
-   --content-flexible: #CBD5E1;
-   --content-flexible-foreground: #1A1A1A;
+   /* Flexible blocks - Light Blue/Lavender bg, Blue tags */
+   --content-flexible: #E9ECF4;
+   --content-flexible-foreground: #3E4040;
+   --content-flexible-tag-bg: #C6CFE8;
+   --content-flexible-tag-fg: #4B546D;
 
    /* Accent Yellow */
    --accent-yellow: #FCFB63;
-   --accent-yellow-foreground: #1A1A1A;
+   --accent-yellow-foreground: #3E4040;
+
+   /* Sage Green (for icons, stats) */
+   --sage-green: #6E8778;
 }
 
 /* ==========================================================================

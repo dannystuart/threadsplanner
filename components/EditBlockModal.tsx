@@ -18,11 +18,11 @@ import {
    Type Selector Options
    ========================================================================== */
 
-const typeOptions: { value: ContentType; label: string; description: string }[] = [
-    { value: ContentType.TEXT, label: 'Text Thread', description: 'Text-only posts' },
-    { value: ContentType.CREATIVE, label: 'Creative', description: 'Visual content' },
-    { value: ContentType.RECYCLED, label: 'Recycled', description: 'Repurposed content' },
-    { value: ContentType.FLEXIBLE, label: 'Flexible', description: 'Trending topics' },
+const typeOptions: { value: ContentType; label: string; description: string; bgClass: string; tagBgClass: string }[] = [
+    { value: ContentType.TEXT, label: 'Text Thread', description: 'Text-only posts', bgClass: 'bg-[var(--content-text)]', tagBgClass: 'bg-[var(--content-text-tag-bg)]' },
+    { value: ContentType.CREATIVE, label: 'Creative', description: 'Visual content', bgClass: 'bg-[var(--content-creative)]', tagBgClass: 'bg-[var(--content-creative-tag-bg)]' },
+    { value: ContentType.RECYCLED, label: 'Recycled', description: 'Repurposed content', bgClass: 'bg-[var(--content-recycled)]', tagBgClass: 'bg-[var(--content-recycled-tag-bg)]' },
+    { value: ContentType.FLEXIBLE, label: 'Flexible', description: 'Trending topics', bgClass: 'bg-[var(--content-flexible)]', tagBgClass: 'bg-[var(--content-flexible-tag-bg)]' },
 ];
 
 /* ==========================================================================
@@ -240,9 +240,10 @@ export function EditBlockModal({
                                         onClick={() => setType(opt.value)}
                                         className={cn(
                                             'rounded-lg border p-3 text-left transition-all',
+                                            opt.bgClass,
                                             type === opt.value
-                                                ? 'border-secondary bg-secondary/20 ring-2 ring-secondary/50'
-                                                : 'border-border hover:border-secondary/50 hover:bg-muted/50'
+                                                ? 'border-foreground/30 ring-2 ring-foreground/20'
+                                                : 'border-transparent hover:border-foreground/20'
                                         )}
                                     >
                                         <div className="font-medium text-foreground">{opt.label}</div>
@@ -274,34 +275,43 @@ export function EditBlockModal({
                             Tags <span className="text-muted-foreground font-normal">(select or add custom)</span>
                         </label>
                         <div className="flex flex-wrap gap-2">
-                            {availableTags.map((tag) => (
-                                <button
-                                    key={tag}
-                                    type="button"
-                                    onClick={() => toggleTag(tag)}
-                                    className={cn(
-                                        'rounded-full px-3 py-1 text-sm font-medium transition-all',
-                                        selectedTags.includes(tag)
-                                            ? 'bg-secondary text-foreground'
-                                            : 'bg-muted text-muted-foreground hover:bg-muted/80'
-                                    )}
-                                >
-                                    {tag}
-                                </button>
-                            ))}
-                            {/* Custom tags */}
-                            {selectedTags
-                                .filter((tag) => !availableTags.includes(tag))
-                                .map((tag) => (
+                            {availableTags.map((tag) => {
+                                const currentTypeConfig = typeOptions.find(o => o.value === type);
+                                return (
                                     <button
                                         key={tag}
                                         type="button"
                                         onClick={() => toggleTag(tag)}
-                                        className="rounded-full bg-secondary px-3 py-1 text-sm font-medium text-foreground"
+                                        className={cn(
+                                            'rounded-full px-3 py-1 text-sm font-medium transition-all',
+                                            selectedTags.includes(tag)
+                                                ? `${currentTypeConfig?.tagBgClass} text-foreground`
+                                                : 'bg-muted text-muted-foreground hover:bg-muted/80'
+                                        )}
                                     >
-                                        {tag} ×
+                                        {tag}
                                     </button>
-                                ))}
+                                );
+                            })}
+                            {/* Custom tags */}
+                            {selectedTags
+                                .filter((tag) => !availableTags.includes(tag))
+                                .map((tag) => {
+                                    const currentTypeConfig = typeOptions.find(o => o.value === type);
+                                    return (
+                                        <button
+                                            key={tag}
+                                            type="button"
+                                            onClick={() => toggleTag(tag)}
+                                            className={cn(
+                                                'rounded-full px-3 py-1 text-sm font-medium text-foreground',
+                                                currentTypeConfig?.tagBgClass
+                                            )}
+                                        >
+                                            {tag} ×
+                                        </button>
+                                    );
+                                })}
                         </div>
                         {/* Custom tag input */}
                         <div className="flex gap-2 mt-2">
