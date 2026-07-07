@@ -9,9 +9,10 @@ import {
     PointerSensor,
     useSensor,
     useSensors,
-    closestCenter,
+    pointerWithin,
 } from '@dnd-kit/core';
 import { usePlannerStore } from '@/store/usePlannerStore';
+import { ViewMode } from '@/store/useViewStore';
 import { ContentBlock, TimeSlot, TIME_SLOT_LABELS } from '@/types';
 import { ContentCard } from '@/components/ContentCard';
 import { DroppableSlot } from './DroppableSlot';
@@ -84,6 +85,7 @@ function parseSlotId(slotId: string): { date: string; timeSlot: TimeSlot } | nul
 
 interface PlannerGridProps {
     startDate?: Date;
+    viewMode?: ViewMode;
     onEditBlock?: (block: ContentBlock) => void;
     /** Called when user clicks + on an empty slot */
     onAddBlockToSlot?: (date: string, timeSlot: TimeSlot) => void;
@@ -91,6 +93,7 @@ interface PlannerGridProps {
 
 export function PlannerGrid({
     startDate = new Date(),
+    viewMode = 'default',
     onEditBlock,
     onAddBlockToSlot
 }: PlannerGridProps) {
@@ -177,7 +180,7 @@ export function PlannerGrid({
     return (
         <DndContext
             sensors={sensors}
-            collisionDetection={closestCenter}
+            collisionDetection={pointerWithin}
             onDragStart={handleDragStart}
             onDragEnd={handleDragEnd}
         >
@@ -204,10 +207,10 @@ export function PlannerGrid({
 
                 {/* Weeks */}
                 {weeks.map((weekDates, weekIndex) => (
-                    <div key={weekIndex} className="space-y-2">
-                        {/* Week Header */}
-                        <div className="border-b border-border pb-2 mb-3">
-                            <h3 className="text-lg font-bold text-foreground">
+                    <div key={weekIndex} className={viewMode === 'mini' ? 'space-y-1' : 'space-y-2'}>
+                        {/* Week Header - Inline layout with date range on right */}
+                        <div className={`border-b border-border ${viewMode === 'mini' ? 'pb-1 mb-1' : 'pb-2 mb-3'} flex items-baseline justify-between`}>
+                            <h3 className={`font-bold text-foreground ${viewMode === 'mini' ? 'text-base' : 'text-lg'}`}>
                                 Week {weekIndex + 1}
                             </h3>
                             <p className="text-sm text-muted-foreground">
@@ -216,7 +219,7 @@ export function PlannerGrid({
                         </div>
 
                         {/* Days in this week */}
-                        <div className="space-y-1">
+                        <div className={viewMode === 'mini' ? 'space-y-0.5' : 'space-y-1'}>
                             {weekDates.map((date) => {
                                 const dateStr = formatDateToISO(date);
                                 const display = formatDateDisplay(date);
@@ -224,19 +227,23 @@ export function PlannerGrid({
                                 return (
                                     <div
                                         key={dateStr}
-                                        className="grid grid-cols-[80px_1fr_1fr_1fr] gap-2 rounded-lg p-2 hover:bg-muted/30 transition-colors"
+                                        className={`grid grid-cols-[80px_1fr_1fr_1fr] gap-2 rounded-lg ${viewMode === 'mini' ? 'p-1' : 'p-2'} hover:bg-muted/30 transition-colors`}
                                     >
-                                        {/* Date Label */}
-                                        <div className="flex flex-col items-center justify-center">
-                                            <span className="text-xs text-muted-foreground uppercase tracking-wider">
+                                        {/* Date Label - Mini mode: just day abbrev, Default: full */}
+                                        <div className={`flex items-center justify-center ${viewMode === 'mini' ? 'flex-row gap-1' : 'flex-col'}`}>
+                                            <span className={`text-muted-foreground uppercase tracking-wider ${viewMode === 'mini' ? 'text-sm font-medium' : 'text-xs'}`}>
                                                 {display.day}
                                             </span>
-                                            <span className="text-lg font-bold text-foreground">
-                                                {display.date}
-                                            </span>
-                                            <span className="text-xs text-muted-foreground">
-                                                {display.month}
-                                            </span>
+                                            {viewMode === 'default' && (
+                                                <>
+                                                    <span className="text-lg font-bold text-foreground">
+                                                        {display.date}
+                                                    </span>
+                                                    <span className="text-xs text-muted-foreground">
+                                                        {display.month}
+                                                    </span>
+                                                </>
+                                            )}
                                         </div>
 
                                         {/* Time Slot Columns */}
@@ -250,17 +257,19 @@ export function PlannerGrid({
                                                     key={slotId}
                                                     id={slotId}
                                                     isEmpty={isEmpty}
+                                                    viewMode={viewMode}
                                                     onAddBlock={
                                                         isEmpty && onAddBlockToSlot
                                                             ? () => onAddBlockToSlot(dateStr, slot)
                                                             : undefined
                                                     }
                                                 >
-                                                    <div className="min-h-[80px] space-y-2">
+                                                    <div className={viewMode === 'mini' ? 'min-h-[44px] flex flex-col justify-center' : 'min-h-[80px] space-y-2'}>
                                                         {slotBlocks.map((block) => (
                                                             <DraggableCard key={block.id} block={block}>
                                                                 <ContentCard
                                                                     block={block}
+                                                                    viewMode={viewMode}
                                                                     onEdit={onEditBlock}
                                                                     className="cursor-grab active:cursor-grabbing"
                                                                 />

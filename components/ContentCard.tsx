@@ -4,6 +4,7 @@ import { Megaphone } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { usePlannerStore } from '@/store/usePlannerStore';
 import { ContentBlock, ContentType } from '@/types';
+import { ViewMode } from '@/store/useViewStore';
 import confetti from 'canvas-confetti';
 
 /* ==========================================================================
@@ -43,19 +44,21 @@ const tagStyles: Record<ContentType, string> = {
 
 interface ContentCardProps {
     block: ContentBlock;
+    viewMode?: ViewMode;
     onEdit?: (block: ContentBlock) => void;
     className?: string;
 }
 
-export function ContentCard({ block, onEdit, className }: ContentCardProps) {
+export function ContentCard({ block, viewMode = 'default', onEdit, className }: ContentCardProps) {
     const toggleDone = usePlannerStore((state) => state.toggleDone);
     const typeConfig = typeStyles[block.type];
     const tagStyle = tagStyles[block.type];
+    const isMini = viewMode === 'mini';
 
     const handleCheckboxChange = (e: React.MouseEvent<HTMLDivElement>) => {
         e.stopPropagation();
 
-        // Trigger confetti only when marking as done
+        // Trigger confetti only when marking as done (reduced in mini mode)
         if (!block.isDone) {
             const rect = e.currentTarget.getBoundingClientRect();
             // Calculate normalized coordinates (0-1) for the center of the checkbox
@@ -64,16 +67,16 @@ export function ContentCard({ block, onEdit, className }: ContentCardProps) {
 
             // Fire confetti from the global instance
             confetti({
-                particleCount: 50, // Reduced from 70
-                spread: 60, // Slightly reduced spread
+                particleCount: isMini ? 25 : 50,
+                spread: isMini ? 40 : 60,
                 origin: { x, y },
-                colors: ['#FCFB63', '#FFFFFF', '#000000'], // Yellow, White, Black to match theme
+                colors: ['#FCFB63', '#FFFFFF', '#000000'],
                 disableForReducedMotion: true,
-                scalar: 0.8, // Smaller particles
-                ticks: 200, // Duration
+                scalar: isMini ? 0.6 : 0.8,
+                ticks: 200,
                 gravity: 1.2,
                 decay: 0.94,
-                startVelocity: 25, // Lower velocity to keep it smaller
+                startVelocity: isMini ? 18 : 25,
                 shapes: ['square', 'circle']
             });
         }
@@ -81,6 +84,56 @@ export function ContentCard({ block, onEdit, className }: ContentCardProps) {
         toggleDone(block.id);
     };
 
+    // Mini mode: Compact single-row layout with just type label + checkbox
+    if (isMini) {
+        return (
+            <div
+                onClick={() => onEdit?.(block)}
+                className={cn(
+                    'group relative flex items-center justify-between rounded-lg px-3 py-2.5 shadow-sm transition-all duration-200',
+                    'hover:shadow-md cursor-pointer',
+                    typeConfig.bg,
+                    'text-[var(--foreground)]',
+                    block.isDone && 'opacity-50',
+                    className
+                )}
+            >
+                {/* Type Label */}
+                <span className="text-[10px] font-bold uppercase tracking-wider opacity-70">
+                    {typeConfig.label}
+                </span>
+
+                {/* Checkbox */}
+                <div
+                    onClick={handleCheckboxChange}
+                    className="flex items-center cursor-pointer"
+                >
+                    <div
+                        className={cn(
+                            'h-4 w-4 rounded border-2 flex items-center justify-center transition-colors',
+                            block.isDone
+                                ? 'bg-foreground border-foreground'
+                                : 'border-foreground/30 hover:border-foreground/50'
+                        )}
+                    >
+                        {block.isDone && (
+                            <svg className="h-2.5 w-2.5 text-background" viewBox="0 0 12 12" fill="none">
+                                <path
+                                    d="M2 6L5 9L10 3"
+                                    stroke="currentColor"
+                                    strokeWidth="2.5"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                />
+                            </svg>
+                        )}
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
+    // Default mode: Full card layout
     return (
         <div
             onClick={() => onEdit?.(block)}
@@ -166,3 +219,4 @@ export function ContentCard({ block, onEdit, className }: ContentCardProps) {
         </div>
     );
 }
+

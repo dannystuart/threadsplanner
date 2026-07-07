@@ -1,11 +1,12 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { Plus } from 'lucide-react';
+import { Plus, LayoutGrid, LayoutList } from 'lucide-react';
 import { PlannerGrid } from '@/components/PlannerGrid';
 import { EditBlockModal } from '@/components/EditBlockModal';
 import { TagManagerDropdown } from '@/components/TagManagerDropdown';
 import { usePlannerStore } from '@/store/usePlannerStore';
+import { useViewStore } from '@/store/useViewStore';
 import { ContentBlock, ContentType, TimeSlot } from '@/types';
 
 /**
@@ -15,6 +16,10 @@ export default function PlannerPage() {
     const blocks = usePlannerStore((state) => state.blocks);
     const addBlock = usePlannerStore((state) => state.addBlock);
     const clearAllBlocks = usePlannerStore((state) => state.clearAllBlocks);
+
+    // View mode
+    const viewMode = useViewStore((state) => state.viewMode);
+    const toggleViewMode = useViewStore((state) => state.toggleViewMode);
 
     // Modal state
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -139,6 +144,17 @@ export default function PlannerPage() {
                         {/* Right: Actions */}
                         <div className="flex items-center gap-2 self-end pb-1">
                             <button
+                                onClick={toggleViewMode}
+                                className="rounded-lg border border-[#E5E7EB] bg-white p-2 text-[#6E8778] hover:bg-gray-50 transition-colors"
+                                title={viewMode === 'default' ? 'Switch to mini view' : 'Switch to default view'}
+                            >
+                                {viewMode === 'default' ? (
+                                    <LayoutList className="h-4 w-4" />
+                                ) : (
+                                    <LayoutGrid className="h-4 w-4" />
+                                )}
+                            </button>
+                            <button
                                 onClick={handleClearAll}
                                 className="rounded-lg border border-[#E5E7EB] bg-white px-4 py-2 text-[13px] font-normal text-[#3E4040] hover:bg-gray-50 transition-colors"
                             >
@@ -159,6 +175,7 @@ export default function PlannerPage() {
             {/* Planner Grid */}
             <main className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
                 <PlannerGrid
+                    viewMode={viewMode}
                     onEditBlock={handleEditBlock}
                     onAddBlockToSlot={handleAddBlockToSlot}
                 />
